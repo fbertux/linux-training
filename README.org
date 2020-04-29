@@ -1,0 +1,425 @@
+#+STARTUP: indent
+#+LANGUAGE: us
+#+TITLE: Linux Training
+#+AUTHOR: Fabio Berton
+
+* Dica de ouro: USAR TAB
+* Navegação
+** Emacs keybinds
+- https://readline.kablamo.org/emacs.html
+** Vi Keybinds
+- http://www.viemu.com/vi-vim-cheat-sheet.gif
+* Pedindo por ajuda
+** Manual de comandos
+#+BEGIN_SRC shell
+  man COMMAND
+#+END_SRC
+
+** Descricao de um comando:
+#+BEGIN_SRC shell
+  whatis COMMAND
+#+END_SRC
+
+** Alternativa para Help:
+#+BEGIN_SRC shell
+  tldr COMMAND
+#+END_SRC
+
+** Coringas:
+#+BEGIN_SRC shell
+  ,*
+  ?
+  []
+  {}
+#+END_SRC
+
+** Informacoes adicionais:
+
+https://tldp.org/LDP/GNU-Linux-Tools-Summary/html/x11655.htm
+
+* Gerenciamento de arquivos e diretorios (pasta eh no Windows)
+** Criar diretório
+#+BEGIN_SRC shell
+  mkdir -p
+#+END_SRC
+
+_DICA:_ Criar um diretorio e entrar nele:
+#+BEGIN_SRC shell
+  mkdir foo && cd "$_"
+#+END_SRC
+
+** Remover diretório
+#+BEGIN_SRC shell
+  rm FILE
+  rm -r FILE/DIR
+  rm -rf FILE/DIR
+#+END_SRC
+
+Esta com duvida? Lembre-se que shell nao tem lixeira!
+#+BEGIN_SRC shell
+  rm -i FILE
+#+END_SRC
+
+** Listar diretorio
+#+BEGIN_SRC shell
+  ls PATH
+  ls -a PATH
+  ls -ls PATH
+  ls -la PATH
+  ls PATH | less
+#+END_SRC
+
+** Mudar de diretorio
+#+BEGIN_SRC shell
+  cd PATH
+  cd ~
+  cd ../../../../
+  cd -
+#+END_SRC
+
+***  Salvar um caminho na pilha
+#+BEGIN_SRC shell
+  pushd caminho
+  popd
+#+END_SRC
+
+** Onde estou?
+#+BEGIN_SRC shell
+  pwd
+#+END_SRC
+
+** Copiar arquivos e diretorios
+#+BEGIN_SRC shell
+  cp
+  cp -r
+#+END_SRC
+
+Pode ser utilizado ~\~ como separador para copiar arquivos com espaco
+
+** Mover arquivos e diretorios
+#+BEGIN_SRC shell
+  mv
+#+END_SRC
+
+** Criar modificar arquivos
+#+BEGIN_SRC shell
+  touch FILE
+  > FILE
+#+END_SRC
+
+** Busca de arquivos, diretórios e historico de comandos
+#+BEGIN_SRC shell
+  find -name FILE /PATH
+#+END_SRC
+- https://www.tecmint.com/35-practical-examples-of-linux-find-command/
+- https://danielmiessler.com/study/find/
+
+** find mais amigável
+*** https://github.com/junegunn/fzf
+
+** grep e git grep
+#+BEGIN_SRC shell
+  grep EXPR ARQ
+  grep -r foo bar.txt
+  grep -i foo bar.txt
+#+END_SRC
+
+- https://ryanstutorials.net/linuxtutorial/cheatsheetgrep.php
+
+* Encontrar caminho do comando
+#+BEGIN_SRC shell
+  which COMMAND
+#+END_SRC
+
+* bg fg
+* Pesquisar no historico
+Ctrl-r
+Usando fzf
+
+* Visualizar arquivos e diretorios
+** Ler o conteudo de um arquivo
+#+BEGIN_SRC shell
+  cat FILE
+  less FILE
+#+END_SRC
+
+** Ler o inicio de um arquivo
+#+BEGIN_SRC shell
+  head FILE
+  head -n 2 FILE
+#+END_SRC
+
+** Ler o final de um arquivo
+#+BEGIN_SRC shell
+  tail FILE
+  tail -n 2 FILE
+  tail -f FILE
+#+END_SRC
+
+** Visualizar como uma arvore
+#+BEGIN_SRC shell
+  tree PATH
+  tree -L 2 PATH
+#+END_SRC
+
+** xdg
+https://wiki.archlinux.org/index.php/XDG_user_directories
+#+BEGIN_SRC shell
+  xdg-open FILE.pdf
+#+END_SRC
+
+** Executar mais de um comando por vez
+#+BEGIN_SRC shell
+  &&
+  ;
+#+END_SRC
+
+** Redirecionador de comandos
+** Ler as mensagens do kernel
+#+BEGIN_SRC shell
+  dmesg
+  dmesg -w
+#+END_SRC
+
+* Compactadores
+** tar:
+-c cria
+-t lista
+-x extrai
+
+*** tar: criar pacote
+#+BEGIN_SRC shell
+  tar -cvf package.tar dir
+#+END_SRC
+
+*** tar: listar arquivos em um pacote
+#+BEGIN_SRC shell
+  tar -tvf file.tar
+#+END_SRC
+
+*** tar: extrair pacote
+#+BEGIN_SRC shell
+  tar -xvf file.tar.gz
+  tar -xvf file.tar.gz -C path
+#+END_SRC
+
+*** Compactar gz
+#+BEGIN_SRC shell
+  tar -cvzf file.tar.gz dir
+#+END_SRC
+
+*** Compactar bz2
+#+BEGIN_SRC shell
+  tar -cvjf file.tar.bz2 dir
+#+END_SRC
+
+** gzip gunzip zcat
+#+BEGIN_SRC shell
+  gunzip file.gz
+  gzip file.txt
+  zcat file.txt.gz
+#+END_SRC
+
+** zip unzip
+#+BEGIN_SRC shell
+  zip -r arquivo.zip caminho
+  unzip arquivo.zip
+#+END_SRC
+
+* Comandos de rede
+wget para baixar arquivos
+curl eh muito utilizado para desenvolvimento
+axel para arquivos grandes, eh bem rapido o donwload
+
+** SSH acessando um host remoto e copiando arquivos
+#+BEGIN_SRC shell
+  ssh user@address
+  scp file user@address
+  scp -r dir user@address
+#+END_SRC
+
+* Tmux
+** General Informations
+https://github.com/tmux/tmux/wiki
+https://wiki.archlinux.org/index.php/Tmux
+** Sane settings
+Add the follow settings to ~~/.tmux.conf~ file
+#+BEGIN_SRC shell
+  # Setting the prefix from C-b to C-a
+  set -g prefix C-a
+  unbind C-b
+  bind-key a last-window
+  bind C-a send-prefix
+
+  # Setting the delay between prefix and command
+  set -s escape-time 0
+  set-option -g repeat-time 1000
+
+  # Scrollback buffer number of lines
+  set -g history-limit 10000
+
+  # Set the default terminal mode to 256color mode
+  set -g default-terminal "screen-256color"
+
+  # Refresh 'status-left' and 'status-right' more often
+  set -g status-interval 5
+
+  # tmux messages are displayed for 3 seconds
+  set -g display-time 3000
+
+  # Super useful when using "grouped sessions" and multi-monitor setup
+  setw -g aggressive-resize on
+
+  # Focus events enabled for terminals that support them
+  set -g focus-events on
+
+  # Renumber windows sequentially after closing any of them.
+  set -g renumber-windows on
+
+  # Set the base index for windows to 1 instead of 0
+  set -g base-index 1
+
+  # Set the base index for panes to 1 instead of 0
+  setw -g pane-base-index 1
+
+  # Enable emacs mode
+  set -g status-keys emacs
+
+  # Display mouse off
+  set -g mouse off
+
+  # Easier and faster switching between next/prev window
+  bind C-p previous-window
+  bind C-n next-window
+
+  # Enable clipboard
+  set -g set-clipboard on
+
+  # Enable xterm-keys in your tmux configuration
+  setw -g xterm-keys on
+
+  # Key bindings for horizontal and vertical panes
+  unbind %
+  bind | split-window -h -c "#{pane_current_path}"
+  bind - split-window -v -c "#{pane_current_path}"
+
+  # Swap Window
+  bind-key -r "<" swap-window -t -1
+  bind-key -r ">" swap-window -t +1
+
+  # Moving between panes
+  bind h select-pane -L
+  bind j select-pane -D
+  bind k select-pane -U
+  bind l select-pane -R
+
+  # Resize pane
+  bind -r H resize-pane -L 3
+  bind -r J resize-pane -D 3
+  bind -r K resize-pane -U 3
+  bind -r L resize-pane -R 3
+
+  # Open new window and new panel at current directory
+  bind C new-window -c "#{pane_current_path}"
+
+  # Preview sessions in zoom mode
+  set-hook -g pane-mode-changed 'if -F "#{||:#{&&:#{pane_in_mode},#{&&:#{pane_in_mode},#{!=:#{pane_mode},copy-mode}}},#{&&:#{?pane_in_mode,0,1},#{window_zoomed_flag}}}" "resizep -Z"'
+
+  # Reload the file with Prefix r
+  bind r source-file ~/.tmux.conf \; display "Reloaded!"
+
+  ### Status Bar confs
+  #
+  # Disable activity alerts
+  setw -g monitor-activity off
+  set -g visual-activity off
+
+  # Set pane colors - hilight the active pane
+  set -g pane-border-style fg=colour235
+  set -g pane-active-border-style fg=colour240
+
+  # colorize messages in the command line
+  set -g message-style fg=brightred,bg=black
+
+  # Status Bar
+  set -g status on
+  set -g status-justify centre
+
+  # Set color for status bar
+  set -g status-bg colour0
+  set -g status-fg yellow
+
+  # Set window list colors - red for active and cyan for inactive
+  # set-window-option -g window-status-style fg=brightblue
+  # set-window-option -g window-status-style bg=colour0
+  set-window-option -g window-status-style dim
+
+  # set-window-option -g window-status-current-style fg=brightred
+  # set-window-option -g window-status-current-style bg=colour0
+  set-window-option -g window-status-current-style bright
+
+  # Status bar left
+  set -g status-left-length 40
+  set -g status-left "#[fg=green] #S :: #I - #P "
+
+  # Status bar rigth
+  set -g status-right-length 40
+  set -g status-right "#{prefix_highlight} #[fg=green] %R :: #H "
+#+END_SRC
+
+** Cheat Sheet
+*** Start new tmux:
+tmux new -s NAME
+
+*** Attach a session:
+tmux attach -t NAME
+
+*** List sessions:
+tmux ls
+
+*** Kill session:
+tmux kill-session -t NAME
+
+*** Sessions
+:new<CR>  new session
+s  list sessions
+$  name session
+
+*** Windows (tabs)
+c  create window
+w  list windows
+n  next window
+p  previous window
+f  find window
+,  name window
+&  kill window
+
+*** Panes (splits)
+|  vertical split
+-  horizontal split
+
+  o  swap panes
+  q  show pane numbers
+  x  kill pane
+  +  break pane into window (e.g. to select text by mouse to copy)
+  -  restore pane from window
+    ⍽  space - toggle between layouts
+    <prefix> q Show pane numbers
+    <prefix> z toggle pane zoom
+    PREFIX : resize-pane -J (Resizes the current pane down)
+    PREFIX : resize-pane -K (Resizes the current pane upward)
+    PREFIX : resize-pane -H (Resizes the current pane left)
+    PREFIX : resize-pane -L (Resizes the current pane right)
+
+*** Copy mode:
+Enter Copy Mode         [
+
+Clear selection         C-g
+Copy selection          M-w
+In copy mode use Emacs keys to navigate
+
+***  Misc
+d  detach
+t  big clock
+?  list shortcuts
+:  prompt
